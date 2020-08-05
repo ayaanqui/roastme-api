@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (_, res) => res.send('Hello, welcome to the RoastMe api'));
+app.get('', (_, res) => res.send('Hello, welcome to the RoastMe api'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -30,4 +30,10 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+// Server
+const port = 3000;
+const host = 'localhost';
+
+app.listen(port, () => {
+  console.log(`\nServer running on http://${host}:${port}/\n\n`);
+});

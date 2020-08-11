@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('', (_, res) => res.send('Hello, welcome to the RoastMe api'));
+app.use(require('./routes'));
 
 // catch 404 and forward to error handler
 app.use((_, res) => {
@@ -25,8 +25,7 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).send('error');
 });
 
 module.exports = app;

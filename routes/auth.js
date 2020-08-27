@@ -28,7 +28,7 @@ authRouter.post('/login', (req, res) => {
         const token = crypto.randomBytes(128).toString('hex');
         const key = crypto.randomBytes(16).toString('hex');
         const userToken = `${token}.${key}`;
-        const encryptedToken = cryptoJS.AES.encrypt(token, key).toString();
+        const encryptedToken = cryptoJS.HmacSHA512(token, key).toString();
 
         UserAuth.create({ encrypted_token: encryptedToken, userId: user.id })
           .then(userAuth => res.status(200).send({ token: userToken }))

@@ -7,8 +7,6 @@ const authRouter = express.Router();
 authRouter.post('/register', (req, res) => {
   const body = req.body;
 
-  console.log(req.body);
-
   if (!body.username || !body.email || !body.password)
     return res.status(400).send({ message: 'Missing field(s)' });
 
@@ -33,6 +31,8 @@ authRouter.post('/register', (req, res) => {
                 })
                 .catch(err => console.log(err));
             });
+          } else {
+            return res.status(400).send({ message: 'Username or email has already been taken by another user' });
           }
         })
         .catch(err => console.log(err));

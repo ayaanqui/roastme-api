@@ -2,6 +2,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const passport = require('passport');
+const cors = require('cors');
+// Models
+const User = require('./models/User');
+const UserAuth = require('./models/UserAuth');
 
 const app = express();
 
@@ -10,6 +15,36 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+
+/**
+ * Passport authentication
+ */
+const BearerStrategy = require('passport-http-bearer').Strategy;
+
+passport.use(new BearerStrategy(
+  (token, done) => {
+    const CryptoJS = require('crypto-js');
+    const parsedToken = token.split('.');
+    const encryptedToken = CryptoJS.AES.encrypt(parsedToken[0], parsedToken[1]).toString();
+
+    UserAuth.findOne({ where: { encrypted_token: encryptedToken } })
+      .then(userAuth => {
+        if (!userAuth)
+          return done(null, false, { message: 'Invalid token' });
+
+        User.findByPk(userAuth.userId)
+          .then(user => {
+            if (!user)
+              return done(null, false, { message: 'Invalid token' });
+            return done(null, user);
+          })
+          .catch(err => done(err));
+      })
+      .catch(err => done(err));
+  }
+));
+
 
 app.use(require('./routes'));
 

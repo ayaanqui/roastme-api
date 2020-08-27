@@ -4,7 +4,6 @@ const User = require('../models/User');
 const UserAuth = require('../models/UserAuth');
 const cryptoJS = require('crypto-js');
 const crypto = require('crypto');
-const { time } = require('console');
 
 const authRouter = express.Router();
 

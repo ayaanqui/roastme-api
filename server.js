@@ -8,7 +8,7 @@ require('./models/relations');
 // db.sync({ force: true })
 db.sync()
   .then(res => {
-    const port = 3000;
+    const port = 3001;
     const host = 'localhost';
 
     app.listen(port, () => {

@@ -60,7 +60,7 @@ authRouter.post('/register', (req, res) => {
                 password: hashedPassword,
               })
                 .then(newUser => {
-                  return res.status(200).send({ message: 'Account created successfully!' });
+                  return res.status(201).send({ message: 'Account created successfully!' });
                 })
                 .catch(err => console.log(err));
             });

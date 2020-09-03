@@ -4,6 +4,7 @@ const User = require('../models/User');
 const UserAuth = require('../models/UserAuth');
 const cryptoJS = require('crypto-js');
 const crypto = require('crypto');
+const passport = require('passport');
 
 const authRouter = express.Router();
 
@@ -71,6 +72,12 @@ authRouter.post('/register', (req, res) => {
         .catch(err => console.log(err));
     })
     .catch(err => console.log(err));
+});
+
+authRouter.get('/verify', passport.authenticate('bearer', { session: false }), (req, res) => {
+  if (req.user) {
+    res.status(200).send({ loggedIn: true });
+  }
 });
 
 module.exports = authRouter;

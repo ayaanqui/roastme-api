@@ -80,4 +80,33 @@ authRouter.get('/verify', passport.authenticate('bearer', { session: false }), (
   }
 });
 
+
+// Check if email is unique
+authRouter.post('/check-email', (req, res) => {
+  const body = req.body;
+
+  if (!body.email)
+    return res.status(400).send({ message: 'Email field required' });
+
+  User.findOne({ where: { email: body.email } })
+    .then(user => {
+      return res.status(200).send({ unique: (user) ? false : true });
+    })
+    .catch(_ => res.status(400).send({ message: 'Error checking email' }));
+});
+
+// Check if username is unique
+authRouter.post('/check-username', (req, res) => {
+  const body = req.body;
+
+  if (!body.username)
+    return res.status(400).send({ message: 'Username field required' });
+
+  User.findOne({ where: { username: body.username } })
+    .then(user => {
+      return res.status(200).send({ unique: (user) ? false : true });
+    })
+    .catch(_ => res.status(400).send({ message: 'Error checking username' }));
+});
+
 module.exports = authRouter;

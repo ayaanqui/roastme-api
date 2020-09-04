@@ -5,8 +5,8 @@ const db = require('./database/');
 // Relations
 require('./models/relations');
 
-// db.sync({ force: true })
-db.sync()
+
+db.sync(/* { force: true } */)
   .then(res => {
     const port = 3001;
     const host = 'localhost';

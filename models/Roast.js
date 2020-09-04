@@ -8,21 +8,17 @@ const Roast = db.define('roasts', {
     allowNull: false,
     primaryKey: true,
   },
-  title: {
-    type: Sequelize.STRING(100),
-    allowNull: false,
-  },
   caption: {
     type: Sequelize.STRING(200),
+    allowNull: false,
+  },
+  image: {
+    type: Sequelize.TEXT,
     allowNull: false,
   },
   description: {
     type: Sequelize.TEXT,
     allowNull: true,
-  },
-  timestamp: {
-    type: Sequelize.DATE,
-    allowNull: false,
   },
 });
 

@@ -24,9 +24,8 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
 
 passport.use(new BearerStrategy(
   (token, done) => {
-    const CryptoJS = require('crypto-js');
-    const parsedToken = token.split('.');
-    const encryptedToken = CryptoJS.HmacSHA512(parsedToken[0], parsedToken[1]).toString();
+    const encryptToken = require('./util/encryptToken');
+    const encryptedToken = encryptToken(token);
 
     UserAuth.findOne({ where: { encrypted_token: encryptedToken } })
       .then(userAuth => {

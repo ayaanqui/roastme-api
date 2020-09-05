@@ -80,6 +80,24 @@ authRouter.get('/verify', passport.authenticate('bearer', { session: false }), (
   }
 });
 
+authRouter.post('/logout', (req, res) => {
+  const body = req.body;
+  if (!body.token)
+    return res.status(400).send({ message: 'Token field required' });
+
+  const encryptToken = require('../util/encryptToken');
+  const encryptedToken = encryptToken(body.token);
+
+  UserAuth.destroy({ where: { encrypted_token: encryptedToken } })
+    .then(response => {
+      if (response === 1)
+        return res.status(200).send({ message: 'Token deleted' })
+      else
+        return res.status(400).send({ message: 'Invalid token' });
+    })
+    .catch(err => res.status(400).send({ message: 'Could not proccess token' }));
+});
+
 
 // Check if email is unique
 authRouter.post('/check-email', (req, res) => {

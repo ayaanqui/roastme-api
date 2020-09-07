@@ -1,9 +1,13 @@
 const express = require('express');
 const passport = require('passport');
+const multer = require('multer');
+
 const Roast = require('../models/Roast');
 const User = require('../models/User');
 
 const roasts = express.Router();
+const upload = multer({ dest: 'public/uploads/' });
+
 
 // Fetch all roasts
 roasts.get('/', (req, res) => {
@@ -16,20 +20,26 @@ roasts.get('/', (req, res) => {
     .catch(_ => res.status(400).send({ message: 'Error fetching roasts' }));
 });
 
-roasts.post('/', passport.authenticate('bearer', { session: false }), (req, res) => {
-  const body = req.body;
+roasts.post('/',
+  passport.authenticate('bearer', { session: false }),
+  upload.single('roast'),
+  (req, res) => {
+    const body = req.body;
 
-  if (!body.image || !body.caption)
-    return res.status(400).send({ message: 'Title and image fields required' });
+    console.log(req.file);
 
-  Roast.create({
-    userId: req.user.id,
-    image: body.image,
-    caption: body.caption,
-  })
-    .then(newRoast => res.status(201).send(newRoast.dataValues))
-    .catch(_ => res.status(400).send({ message: 'Could not create roast' }));
-});
+    if (!body.image || !body.caption)
+      return res.status(400).send({ message: 'Title and image fields required' });
+
+    Roast.create({
+      userId: req.user.id,
+      image: req.file.filename,
+      caption: body.caption,
+    })
+      .then(newRoast => res.status(201).send(newRoast.dataValues))
+      .catch(_ => res.status(400).send({ message: 'Could not create roast' }));
+  }
+);
 
 roasts.get('/:id', (req, res) => {
   const roastId = req.params.id;

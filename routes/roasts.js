@@ -7,7 +7,11 @@ const roasts = express.Router();
 
 // Fetch all roasts
 roasts.get('/', (req, res) => {
-  Roast.findAll()
+  Roast.findAll({
+    order: [
+      ['id', 'DESC'],
+    ]
+  })
     .then(roasts => res.status(200).send(roasts))
     .catch(_ => res.status(400).send({ message: 'Error fetching roasts' }));
 });

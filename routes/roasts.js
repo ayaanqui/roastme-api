@@ -1,12 +1,23 @@
 const express = require('express');
 const passport = require('passport');
 const multer = require('multer');
+const crypto = require('crypto');
+const path = require('path');
 
 const Roast = require('../models/Roast');
 const User = require('../models/User');
 
 const roasts = express.Router();
-const upload = multer({ dest: 'public/uploads/' });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, './public/uploads/'),
+  filename: (req, file, cb) => {
+    const newFilename = `${crypto.randomBytes(50).toString('hex')}${path.extname(file.originalname)}`;
+    cb(null, newFilename);
+  },
+});
+// create the multer instance that will be used to upload/save the file
+const upload = multer({ storage });
 
 
 // Fetch all roasts
@@ -22,13 +33,11 @@ roasts.get('/', (req, res) => {
 
 roasts.post('/',
   passport.authenticate('bearer', { session: false }),
-  upload.single('roast'),
+  upload.single('image'),
   (req, res) => {
     const body = req.body;
 
-    console.log(req.file);
-
-    if (!body.image || !body.caption)
+    if (!body.caption)
       return res.status(400).send({ message: 'Title and image fields required' });
 
     Roast.create({

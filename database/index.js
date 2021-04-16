@@ -7,7 +7,7 @@ const db = new Sequelize(
   dbuser.password,
   {
     host: 'localhost',
-    dialect: 'postgres'
+    dialect: 'mysql'
   }
 );
 module.exports = db;
